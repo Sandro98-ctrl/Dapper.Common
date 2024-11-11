@@ -38,7 +38,7 @@ public static class OracleBuilderExtensions
         builder.Services.TryAddSingleton<OracleOptions>(sp =>
         {
             var optionsBuilder = new OracleOptionsBuilder(sp);
-            optionAction?.Invoke(optionsBuilder);
+            optionAction.Invoke(optionsBuilder);
             return optionsBuilder.Build();
         });
 
@@ -54,13 +54,13 @@ public static class OracleBuilderExtensions
         builder.Services.TryAddSingleton<OracleOptions>(sp =>
         {
             var optionsBuilder = new OracleOptionsBuilder(sp);
-            optionAction?.Invoke(sp, optionsBuilder);
+            optionAction.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
 
         return builder;
     }
 
-    private static IServiceCollection AddOracleDbConnectionFactory(this IServiceCollection services) =>
+    private static void AddOracleDbConnectionFactory(this IServiceCollection services) =>
         services.AddSingleton<IDbConnectionFactory, OracleDbConnectionFactory>();
 }
