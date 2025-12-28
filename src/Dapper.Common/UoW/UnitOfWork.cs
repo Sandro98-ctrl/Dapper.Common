@@ -6,19 +6,19 @@ internal sealed class UnitOfWork(DapperContext dbContext, ILogger<UnitOfWork> lo
 {
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Beginning transaction..");
+        logger.LogDebug("Beginning transaction..");
         await dbContext.BeginTransactionAsync(cancellationToken);
     }
 
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Commiting transaction..");
+        logger.LogDebug("Commiting transaction..");
         await dbContext.CommitAsync(cancellationToken);
     }
 
     public async Task RollbackAsync(CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Rollback transaction..");
+        logger.LogDebug("Rollback transaction..");
         await dbContext.RollbackAsync(cancellationToken);
     }
 }
