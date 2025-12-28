@@ -7,6 +7,7 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
 {
     private DbConnection? _connection;
     private DbTransaction? _transaction;
+    private bool _isDisposed;
 
     private DbConnection Connection => _connection ??= connectionFactory.CreateConnection();
 
@@ -16,11 +17,8 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         CancellationToken cancellationToken = default)
     {
         await OpenConnectionAsync(cancellationToken);
-        return await Connection.QueryFirstOrDefaultAsync<T>(new CommandDefinition(
-            commandText: sql,
-            parameters: parameters,
-            transaction: _transaction,
-            cancellationToken: cancellationToken));
+        var command = CreateCommand(sql, parameters, cancellationToken);
+        return await Connection.QueryFirstOrDefaultAsync<T>(command);
     }
 
     public async Task<IEnumerable<T>> QueryAsync<T>(
@@ -29,11 +27,8 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         CancellationToken cancellationToken = default)
     {
         await OpenConnectionAsync(cancellationToken);
-        return await Connection.QueryAsync<T>(new CommandDefinition(
-            commandText: sql,
-            parameters: parameters,
-            transaction: _transaction,
-            cancellationToken: cancellationToken));
+        var command = CreateCommand(sql, parameters, cancellationToken);
+        return await Connection.QueryAsync<T>(command);
     }
 
     public async Task<int> ExecuteAsync(
@@ -42,11 +37,8 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         CancellationToken cancellationToken = default)
     {
         await OpenConnectionAsync(cancellationToken);
-        return await Connection.ExecuteAsync(new CommandDefinition(
-            commandText: sql,
-            parameters: parameters,
-            transaction: _transaction,
-            cancellationToken: cancellationToken));
+        var command = CreateCommand(sql, parameters, cancellationToken);
+        return await Connection.ExecuteAsync(command);
     }
 
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
@@ -80,12 +72,19 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
 
     public void Dispose()
     {
+        if (_isDisposed) return;
+
         _transaction?.Dispose();
         _connection?.Dispose();
+
+        _isDisposed = true;
+        GC.SuppressFinalize(this);
     }
 
     public async ValueTask DisposeAsync()
     {
+        if (_isDisposed) return;
+
         if (_transaction is not null)
         {
             await _transaction.DisposeAsync();
@@ -95,6 +94,9 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         {
             await _connection.DisposeAsync();
         }
+
+        _isDisposed = true;
+        GC.SuppressFinalize(this);
     }
 
     private async Task OpenConnectionAsync(CancellationToken cancellationToken)
@@ -104,4 +106,11 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
             await Connection.OpenAsync(cancellationToken);
         }
     }
+
+    private CommandDefinition CreateCommand(string sql, object? parameters, CancellationToken cancellationToken) =>
+        new(
+            commandText: sql,
+            parameters: parameters,
+            transaction: _transaction,
+            cancellationToken: cancellationToken);
 }
