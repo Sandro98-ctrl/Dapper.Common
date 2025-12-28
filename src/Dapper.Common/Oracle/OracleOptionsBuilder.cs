@@ -2,7 +2,11 @@
 
 namespace Dapper.Common.Oracle;
 
-public class OracleOptionsBuilder(IServiceProvider sp) : BaseOptionsBuilder<OracleOptions>(sp)
+public class OracleOptionsBuilder : BaseOptionsBuilder<OracleOptions>
 {
-    public override OracleOptions Build() => new(_connectionString);
+    public override OracleOptions Build()
+    {
+        EnsureConnectionString();
+        return new(_connectionString);
+    }
 }

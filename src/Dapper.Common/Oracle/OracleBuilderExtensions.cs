@@ -1,44 +1,46 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Dapper.Common.Oracle;
 
 public static class OracleBuilderExtensions
 {
-    // public static DapperBuilder UseOracleDb(this DapperBuilder builder, string connectionString)
-    // {
-    //     builder.Services.AddOracleDbConnectionFactory();
-    //
-    //     builder.Services.TryAddSingleton<OracleOptions>(sp =>
-    //         new OracleOptionsBuilder(sp)
-    //             .WithConnectionString(connectionString)
-    //             .Build());
-    //
-    //     return builder;
-    // }
+    public static DapperBuilder UseOracleDb(this DapperBuilder builder, string connectionString)
+    {
+        builder.Services.AddOracleDbConnectionFactory();
 
-    public static DapperBuilder UseOracleDb(this DapperBuilder builder, string sectionName)
+        builder.Services.TryAddSingleton(new OracleOptions(connectionString));
+
+        return builder;
+    }
+
+    public static DapperBuilder UseOracleDbFromConnectionStringName(this DapperBuilder builder, string connectionStringName)
     {
         builder.Services.AddOracleDbConnectionFactory();
 
         builder.Services.TryAddSingleton(sp =>
-            new OracleOptionsBuilder(sp)
-                .WithConnectionStringByName(sectionName)
-                .Build());
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString(connectionStringName)
+                ?? throw new InvalidOperationException($"Connection string '{connectionStringName}' not found.");
+
+            return new OracleOptions(connectionString);
+        });
 
         return builder;
     }
 
     public static DapperBuilder UseOracleDb(
         this DapperBuilder builder,
-        Action<OracleOptionsBuilder> optionAction)
+        Action<OracleOptionsBuilder> configure)
     {
         builder.Services.AddOracleDbConnectionFactory();
 
         builder.Services.TryAddSingleton(sp =>
         {
-            var optionsBuilder = new OracleOptionsBuilder(sp);
-            optionAction.Invoke(optionsBuilder);
+            var optionsBuilder = new OracleOptionsBuilder();
+            configure.Invoke(optionsBuilder);
             return optionsBuilder.Build();
         });
 
@@ -47,14 +49,14 @@ public static class OracleBuilderExtensions
 
     public static DapperBuilder UseOracleDb(
         this DapperBuilder builder,
-        Action<IServiceProvider, OracleOptionsBuilder> optionAction)
+        Action<IServiceProvider, OracleOptionsBuilder> configure)
     {
         builder.Services.AddOracleDbConnectionFactory();
 
         builder.Services.TryAddSingleton(sp =>
         {
-            var optionsBuilder = new OracleOptionsBuilder(sp);
-            optionAction.Invoke(sp, optionsBuilder);
+            var optionsBuilder = new OracleOptionsBuilder();
+            configure.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
 

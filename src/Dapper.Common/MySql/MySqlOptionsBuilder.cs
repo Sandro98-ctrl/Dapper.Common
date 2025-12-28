@@ -2,7 +2,11 @@
 
 namespace Dapper.Common.MySql;
 
-public sealed class MySqlOptionsBuilder(IServiceProvider sp) : BaseOptionsBuilder<MySqlOptions>(sp)
+public sealed class MySqlOptionsBuilder : BaseOptionsBuilder<MySqlOptions>
 {
-    public override MySqlOptions Build() => new(_connectionString);
+    public override MySqlOptions Build()
+    {
+        EnsureConnectionString();
+        return new(_connectionString);
+    }
 }

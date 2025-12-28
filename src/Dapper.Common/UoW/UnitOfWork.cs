@@ -2,7 +2,7 @@
 
 namespace Dapper.Common.UoW;
 
-internal sealed class UnitOfWork(DbContext dbContext, ILogger<UnitOfWork> logger) : IUnitOfWork
+internal sealed class UnitOfWork(DapperContext dbContext, ILogger<UnitOfWork> logger) : IUnitOfWork
 {
     public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {

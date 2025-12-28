@@ -6,9 +6,9 @@ namespace Dapper.Common;
 
 public static class DapperExtensions
 {
-    public static DapperBuilder AddDbContext(this IServiceCollection services)
+    public static DapperBuilder AddDapperContext(this IServiceCollection services)
     {
-        services.TryAddScoped<DbContext>();
+        services.TryAddScoped<DapperContext>();
         return new DapperBuilder(services);
     }
 

@@ -3,7 +3,7 @@ using System.Data.Common;
 
 namespace Dapper.Common;
 
-public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposable, IAsyncDisposable
+public sealed class DapperContext(IDbConnectionFactory connectionFactory) : IDisposable, IAsyncDisposable
 {
     private DbConnection? _connection;
     private DbTransaction? _transaction;
