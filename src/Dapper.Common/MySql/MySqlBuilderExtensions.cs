@@ -9,7 +9,7 @@ public static class MySqlBuilderExtensions
     {
         builder.Services.AddMySqlDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<MySqlOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
             new MySqlOptionsBuilder(sp)
                 .WithConnectionStringByName(sectionName)
                 .Build());
@@ -23,7 +23,7 @@ public static class MySqlBuilderExtensions
     {
         builder.Services.AddMySqlDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<MySqlOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
         {
             var optionsBuilder = new MySqlOptionsBuilder(sp);
             optionAction.Invoke(optionsBuilder);
@@ -39,7 +39,7 @@ public static class MySqlBuilderExtensions
     {
         builder.Services.AddMySqlDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<MySqlOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
         {
             var optionsBuilder = new MySqlOptionsBuilder(sp);
             optionAction.Invoke(sp, optionsBuilder);

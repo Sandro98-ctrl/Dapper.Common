@@ -1,5 +1,5 @@
-﻿using System.Data.Common;
-using MySqlConnector;
+﻿using MySqlConnector;
+using System.Data.Common;
 
 namespace Dapper.Common.MySql;
 

@@ -21,7 +21,7 @@ public static class OracleBuilderExtensions
     {
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<OracleOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
             new OracleOptionsBuilder(sp)
                 .WithConnectionStringByName(sectionName)
                 .Build());
@@ -35,7 +35,7 @@ public static class OracleBuilderExtensions
     {
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<OracleOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
         {
             var optionsBuilder = new OracleOptionsBuilder(sp);
             optionAction.Invoke(optionsBuilder);
@@ -51,7 +51,7 @@ public static class OracleBuilderExtensions
     {
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton<OracleOptions>(sp =>
+        builder.Services.TryAddSingleton(sp =>
         {
             var optionsBuilder = new OracleOptionsBuilder(sp);
             optionAction.Invoke(sp, optionsBuilder);

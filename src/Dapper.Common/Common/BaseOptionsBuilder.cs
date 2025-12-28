@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Dapper.Common.Common;
 
-public abstract class BaseOptionsBuilder<TOptions>(IServiceProvider sp)
+public abstract class BaseOptionsBuilder<TOptions>(IServiceProvider sp) where TOptions : class
 {
-    protected string ConnectionString = string.Empty;
-    
+    protected string _connectionString = string.Empty;
+
     public BaseOptionsBuilder<TOptions> WithConnectionStringByName(string name)
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
@@ -15,9 +15,11 @@ public abstract class BaseOptionsBuilder<TOptions>(IServiceProvider sp)
 
     public BaseOptionsBuilder<TOptions> WithConnectionString(string connectionString)
     {
-        ConnectionString = connectionString;
+        ArgumentException.ThrowIfNullOrEmpty(nameof(connectionString));
+
+        _connectionString = connectionString;
         return this;
     }
-    
+
     public abstract TOptions Build();
 }
