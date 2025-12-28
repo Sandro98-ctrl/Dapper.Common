@@ -15,7 +15,7 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         object? parameters = null,
         CancellationToken cancellationToken = default)
     {
-        await OpenConnectionAsync();
+        await OpenConnectionAsync(cancellationToken);
         return await Connection.QueryFirstOrDefaultAsync<T>(new CommandDefinition(
             commandText: sql,
             parameters: parameters,
@@ -28,7 +28,7 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         object? parameters = null,
         CancellationToken cancellationToken = default)
     {
-        await OpenConnectionAsync();
+        await OpenConnectionAsync(cancellationToken);
         return await Connection.QueryAsync<T>(new CommandDefinition(
             commandText: sql,
             parameters: parameters,
@@ -41,7 +41,7 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         object? parameters = null,
         CancellationToken cancellationToken = default)
     {
-        await OpenConnectionAsync();
+        await OpenConnectionAsync(cancellationToken);
         return await Connection.ExecuteAsync(new CommandDefinition(
             commandText: sql,
             parameters: parameters,
@@ -49,8 +49,14 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
             cancellationToken: cancellationToken));
     }
 
-    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default) =>
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        if (_transaction is not null)
+            throw new InvalidOperationException("Transaction already started.");
+
+        await OpenConnectionAsync(cancellationToken);
         _transaction = await Connection.BeginTransactionAsync(cancellationToken);
+    }
 
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
@@ -91,11 +97,11 @@ public sealed class DbContext(IDbConnectionFactory connectionFactory) : IDisposa
         }
     }
 
-    private async Task OpenConnectionAsync()
+    private async Task OpenConnectionAsync(CancellationToken cancellationToken)
     {
         if (Connection.State is ConnectionState.Closed)
         {
-            await Connection.OpenAsync();
+            await Connection.OpenAsync(cancellationToken);
         }
     }
 }
