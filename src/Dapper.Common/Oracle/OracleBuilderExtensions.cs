@@ -12,6 +12,8 @@ public static class OracleBuilderExtensions
 
         builder.Services.TryAddSingleton(new OracleOptions(connectionString));
 
+        builder.MarkProviderConfigured();
+
         return builder;
     }
 
@@ -27,6 +29,8 @@ public static class OracleBuilderExtensions
 
             return new OracleOptions(connectionString);
         });
+
+        builder.MarkProviderConfigured();
 
         return builder;
     }
@@ -44,6 +48,8 @@ public static class OracleBuilderExtensions
             return optionsBuilder.Build();
         });
 
+        builder.MarkProviderConfigured();
+
         return builder;
     }
 
@@ -59,6 +65,8 @@ public static class OracleBuilderExtensions
             configure.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
+
+        builder.MarkProviderConfigured();
 
         return builder;
     }

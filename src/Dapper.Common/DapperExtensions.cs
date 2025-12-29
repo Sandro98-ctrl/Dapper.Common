@@ -6,15 +6,57 @@ namespace Dapper.Common;
 
 public static class DapperExtensions
 {
-    public static DapperBuilder AddDapperContext(this IServiceCollection services)
+    public static IServiceCollection AddDapperContext(
+        this IServiceCollection services,
+        Action<DapperBuilder> configure)
     {
         services.TryAddScoped<DapperContext>();
-        return new DapperBuilder(services);
+
+        var builder = new DapperBuilder(services);
+        configure(builder);
+
+        return services;
     }
 
-    public static DapperBuilder AddUnitOfWork(this DapperBuilder builder)
+    //public static IServiceCollection AddDapperContext(
+    //    this IServiceCollection services,
+    //    Action<IServiceProvider, DapperBuilder> configure)
+    //{
+    //    services.TryAddScoped<DapperContext>();
+
+    //    services.AddSingleton<IDapperBuilderConfigurator>(
+    //        sp => new DapperBuilderConfigurator(sp, configure));
+
+    //    return services;
+    //}
+
+    public static IServiceCollection AddUnitOfWork(this DapperBuilder builder)
     {
-        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-        return builder;
+        return builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }
+
+//internal sealed class DapperBuilderConfigurator : IDapperBuilderConfigurator
+//{
+//    private readonly IServiceProvider _serviceProvider;
+//    private readonly Action<IServiceProvider, DapperBuilder> _configure;
+
+//    public DapperBuilderConfigurator(
+//        IServiceProvider serviceProvider,
+//        Action<IServiceProvider, DapperBuilder> configure)
+//    {
+//        _serviceProvider = serviceProvider;
+//        _configure = configure;
+//    }
+
+//    public void Configure()
+//    {
+//        var builder = new DapperBuilder(services);
+//        _configure(_serviceProvider, builder);
+//    }
+//}
+
+//internal interface IDapperBuilderConfigurator
+//{
+//    void Configure();
+//}

@@ -12,6 +12,8 @@ public static class MySqlBuilderExtensions
 
         builder.Services.TryAddSingleton(sp => new MySqlOptions(connectionString));
 
+        builder.MarkProviderConfigured();
+
         return builder;
     }
 
@@ -27,6 +29,8 @@ public static class MySqlBuilderExtensions
 
             return new MySqlOptions(connectionString);
         });
+
+        builder.MarkProviderConfigured();
 
         return builder;
     }
@@ -44,6 +48,8 @@ public static class MySqlBuilderExtensions
             return optionsBuilder.Build();
         });
 
+        builder.MarkProviderConfigured();
+
         return builder;
     }
 
@@ -59,6 +65,8 @@ public static class MySqlBuilderExtensions
             configure.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
+
+        builder.MarkProviderConfigured();
 
         return builder;
     }
