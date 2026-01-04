@@ -6,7 +6,7 @@ namespace Dapper.Common.Oracle;
 
 public static class OracleBuilderExtensions
 {
-    public static DapperBuilder UseOracleDb(this DapperBuilder builder, string connectionString)
+    public static DapperContextBuilder UseOracleDb(this DapperContextBuilder builder, string connectionString)
     {
         builder.Services.AddOracleDbConnectionFactory();
 
@@ -17,7 +17,7 @@ public static class OracleBuilderExtensions
         return builder;
     }
 
-    public static DapperBuilder UseOracleDbFromConnectionStringName(this DapperBuilder builder, string connectionStringName)
+    public static DapperContextBuilder UseOracleDbFromConnectionStringName(this DapperContextBuilder builder, string connectionStringName)
     {
         builder.Services.AddOracleDbConnectionFactory();
 
@@ -35,8 +35,8 @@ public static class OracleBuilderExtensions
         return builder;
     }
 
-    public static DapperBuilder UseOracleDb(
-        this DapperBuilder builder,
+    public static DapperContextBuilder UseOracleDb(
+        this DapperContextBuilder builder,
         Action<OracleOptionsBuilder> configure)
     {
         builder.Services.AddOracleDbConnectionFactory();
@@ -45,24 +45,6 @@ public static class OracleBuilderExtensions
         {
             var optionsBuilder = new OracleOptionsBuilder();
             configure.Invoke(optionsBuilder);
-            return optionsBuilder.Build();
-        });
-
-        builder.MarkProviderConfigured();
-
-        return builder;
-    }
-
-    public static DapperBuilder UseOracleDb(
-        this DapperBuilder builder,
-        Action<IServiceProvider, OracleOptionsBuilder> configure)
-    {
-        builder.Services.AddOracleDbConnectionFactory();
-
-        builder.Services.TryAddSingleton(sp =>
-        {
-            var optionsBuilder = new OracleOptionsBuilder();
-            configure.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
 

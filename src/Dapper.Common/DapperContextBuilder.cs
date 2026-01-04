@@ -2,7 +2,7 @@
 
 namespace Dapper.Common;
 
-public sealed class DapperBuilder(IServiceCollection services)
+public sealed class DapperContextBuilder(IServiceCollection services)
 {
     private bool _providerConfigured;
 

@@ -6,7 +6,7 @@ namespace Dapper.Common.MySql;
 
 public static class MySqlBuilderExtensions
 {
-    public static DapperBuilder UseMySql(this DapperBuilder builder, string connectionString)
+    public static DapperContextBuilder UseMySql(this DapperContextBuilder builder, string connectionString)
     {
         builder.Services.AddMySqlDbConnectionFactory();
 
@@ -17,7 +17,7 @@ public static class MySqlBuilderExtensions
         return builder;
     }
 
-    public static DapperBuilder UseMySqlFromConnectionStringName(this DapperBuilder builder, string connectionStringName)
+    public static DapperContextBuilder UseMySqlFromConnectionStringName(this DapperContextBuilder builder, string connectionStringName)
     {
         builder.Services.AddMySqlDbConnectionFactory();
 
@@ -35,8 +35,8 @@ public static class MySqlBuilderExtensions
         return builder;
     }
 
-    public static DapperBuilder UseMySql(
-        this DapperBuilder builder,
+    public static DapperContextBuilder UseMySql(
+        this DapperContextBuilder builder,
         Action<MySqlOptionsBuilder> configure)
     {
         builder.Services.AddMySqlDbConnectionFactory();
@@ -45,24 +45,6 @@ public static class MySqlBuilderExtensions
         {
             var optionsBuilder = new MySqlOptionsBuilder();
             configure.Invoke(optionsBuilder);
-            return optionsBuilder.Build();
-        });
-
-        builder.MarkProviderConfigured();
-
-        return builder;
-    }
-
-    public static DapperBuilder UseMySql(
-        this DapperBuilder builder,
-        Action<IServiceProvider, MySqlOptionsBuilder> configure)
-    {
-        builder.Services.AddMySqlDbConnectionFactory();
-
-        builder.Services.TryAddSingleton(sp =>
-        {
-            var optionsBuilder = new MySqlOptionsBuilder();
-            configure.Invoke(sp, optionsBuilder);
             return optionsBuilder.Build();
         });
 
