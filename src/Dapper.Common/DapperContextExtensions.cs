@@ -13,6 +13,7 @@ public static class DapperContextExtensions
         var builder = new DapperContextBuilder(services);
         configure(builder);
 
+        services.TryAddScoped<DapperContext>();
         AddCore(services);
 
         return services;
@@ -29,14 +30,26 @@ public static class DapperContextExtensions
     //        return builder;
     //    });
 
+    //    services.TryAddScoped<DapperContext>();
     //    AddCore(services);
 
     //    return services;
     //}
 
+    public static IServiceCollection AddDapperCore(
+        this IServiceCollection services,
+        Action<DapperContextBuilder> configure)
+    {
+        var builder = new DapperContextBuilder(services);
+        configure(builder);
+
+        AddCore(services);
+
+        return services;
+    }
+
     private static void AddCore(IServiceCollection services)
     {
-        services.TryAddScoped<DapperContext>();
         services.AddScoped<DbSession>();
         services.AddScoped<IDbSession, DbSession>(sp => sp.GetRequiredService<DbSession>());
     }

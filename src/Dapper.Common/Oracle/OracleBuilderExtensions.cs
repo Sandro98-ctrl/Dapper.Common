@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Dapper.Common.Oracle;
 
@@ -8,20 +7,22 @@ public static class OracleBuilderExtensions
 {
     public static DapperContextBuilder UseOracleDb(this DapperContextBuilder builder, string connectionString)
     {
+        builder.UseProvider();
+
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton(new OracleOptions(connectionString));
-
-        builder.MarkProviderConfigured();
+        builder.Services.AddSingleton(new OracleOptions(connectionString));
 
         return builder;
     }
 
     public static DapperContextBuilder UseOracleDbFromConnectionStringName(this DapperContextBuilder builder, string connectionStringName)
     {
+        builder.UseProvider();
+
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton(sp =>
+        builder.Services.AddSingleton(sp =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
             var connectionString = configuration.GetConnectionString(connectionStringName)
@@ -30,8 +31,6 @@ public static class OracleBuilderExtensions
             return new OracleOptions(connectionString);
         });
 
-        builder.MarkProviderConfigured();
-
         return builder;
     }
 
@@ -39,16 +38,16 @@ public static class OracleBuilderExtensions
         this DapperContextBuilder builder,
         Action<OracleOptionsBuilder> configure)
     {
+        builder.UseProvider();
+
         builder.Services.AddOracleDbConnectionFactory();
 
-        builder.Services.TryAddSingleton(sp =>
+        builder.Services.AddSingleton(sp =>
         {
             var optionsBuilder = new OracleOptionsBuilder();
             configure.Invoke(optionsBuilder);
             return optionsBuilder.Build();
         });
-
-        builder.MarkProviderConfigured();
 
         return builder;
     }

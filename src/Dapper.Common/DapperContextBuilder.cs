@@ -8,7 +8,7 @@ public sealed class DapperContextBuilder(IServiceCollection services)
 
     internal IServiceCollection Services { get; } = services;
 
-    internal void MarkProviderConfigured()
+    internal void UseProvider()
     {
         if (_providerConfigured)
             throw new InvalidOperationException("Only one database provider can be configured.");

@@ -17,6 +17,13 @@ builder.Services.AddDapperContext((options) =>
     options.AddUnitOfWork();
 });
 
+//builder.Services.AddDapperCore((options) =>
+//{
+//    var connectionString = builder.Configuration.GetConnectionString("Default")!;
+//    options.UseSqlite(connectionString);
+//    options.AddUnitOfWork();
+//});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
