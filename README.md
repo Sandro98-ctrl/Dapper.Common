@@ -168,9 +168,9 @@ public sealed class RawSqlService
     }
 }
 ```
-⚠️ **Note:**
-Using `IDbSession` bypasses some safeguards provided by `DapperContext`.
-Prefer `DapperContext` unless you know exactly what you’re doing.
+> ⚠️ **Note:**
+> Using `IDbSession` bypasses some safeguards provided by `DapperContext`.
+> Prefer `DapperContext` unless you know exactly what you’re doing.
 
 ## 🧩 Supported Providers
 
@@ -210,7 +210,7 @@ You absolutely can.
 
 ## 🧪 Thread Safety & Lifetime
 
-- `DbSession`, vDapperContext`, and `UnitOfWork` are Scoped
+- `DbSession`, `DapperContext`, and `UnitOfWork` are Scoped
 - One connection per scope
 - One transaction per scope
 
@@ -223,6 +223,6 @@ MIT
 This framework is intentionally small.
 
 If you ever feel the need to fight it —
-you can always drop down to IDbSession.
+you can always drop down to `IDbSession`.
 
 That’s by design.
