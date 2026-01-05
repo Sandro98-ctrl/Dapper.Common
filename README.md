@@ -34,7 +34,7 @@ services.AddDapperContext(builder =>
 });
 ```
 
-# Or using a connection string from configuration:
+Or using a connection string from configuration:
 
 ```csharp
 services.AddDapperContext(builder =>
@@ -43,7 +43,7 @@ services.AddDapperContext(builder =>
 });
 ```
 
-### 2️⃣ Inject DapperContext into repositories
+### 2️⃣ Inject `DapperContext` into repositories
 
 ```csharp
 public sealed class UserRepository
@@ -70,13 +70,13 @@ public sealed class UserRepository
     }
 }
 ```
-#### 📌 This is the recommended way to interact with the database.
+#### 📌 **This is the recommended way to interact with the database.**
 
 ### 🔁 Transactions & Unit of Work
 
-DapperContext automatically participates in an active transaction if one exists.
+`DapperContext` automatically participates in an active transaction if one exists.
 
-To explicitly control transactions, inject IUnitOfWork:
+To explicitly control transactions, inject `IUnitOfWork`:
 
 ```csharp
 public sealed class CreateUserHandler
@@ -111,7 +111,7 @@ public sealed class CreateUserHandler
     }
 }
 ```
-✔️ All commands executed through DapperContext automatically use the current transaction.
+✔️ All commands executed through `DapperContext` automatically use the current transaction.
 
 ## 🧱 Architecture Overview
 ```pgsql
@@ -135,9 +135,9 @@ public sealed class CreateUserHandler
 └──────────────────────┘
 ```
 
-## ⚙️ Advanced Usage: IDbSession
+## ⚙️ Advanced Usage: `IDbSession`
 
-For advanced scenarios, the framework exposes IDbSession.
+For advanced scenarios, the framework exposes `IDbSession`.
 
 ### When should you use it?
 
@@ -168,9 +168,9 @@ public sealed class RawSqlService
     }
 }
 ```
-⚠️ Note:
-Using IDbSession bypasses some safeguards provided by DapperContext.
-Prefer DapperContext unless you know exactly what you’re doing.
+⚠️ **Note:**
+Using `IDbSession` bypasses some safeguards provided by `DapperContext`.
+Prefer `DapperContext` unless you know exactly what you’re doing.
 
 ## 🧩 Supported Providers
 
@@ -188,10 +188,10 @@ Only one provider can be configured per application.
 
 ## 🛠 Design Philosophy
 
-- Explicit over implicit
-- Control over convenience
-- Opinionated, but extensible
-- Framework-level guarantees, not magic
+- **Explicit over implicit**
+- **Control over convenience**
+- **Opinionated, but extensible**
+- **Framework-level guarantees, not magic**
 
 This framework does not:
 - Track entities
@@ -202,7 +202,7 @@ This framework does not:
 
 You absolutely can.
 
-DapperContext exists for teams that want:
+`DapperContext` exists for teams that want:
 - Consistent transaction handling
 - Centralized connection lifecycle
 - Cleaner repositories
@@ -210,7 +210,7 @@ DapperContext exists for teams that want:
 
 ## 🧪 Thread Safety & Lifetime
 
-- DbSession, DapperContext, and UnitOfWork are Scoped
+- `DbSession`, vDapperContext`, and `UnitOfWork` are Scoped
 - One connection per scope
 - One transaction per scope
 
